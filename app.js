@@ -47,9 +47,26 @@ class DrumKit {
   }
   start() {
     const interval = (60 / this.bpm) * 1000;
-    setInterval(() => {
-      this.repeat();
-    }, interval);
+    
+    if(!this.isPlaying){
+      this.isPlaying = setInterval(() => {
+        //setInterval returns an ID
+        this.repeat();
+      }, interval);
+    }else{
+      clearInterval(this.isPlaying);
+      this.isPlaying = null;
+    }
+  //  console.log(this.isPlaying);
+  }
+  updateBtn(){
+    if(!this.isPlaying){
+      this.playBtn.textContent = 'Play';
+      this.playBtn.classList.add('active');
+    }else{
+      this.playBtn.textContent = 'Stop';
+      this.playBtn.classList.remove('active');
+    }
   }
 }
 
@@ -62,4 +79,5 @@ drumkit.pads.forEach((pad) => {
 });
 drumkit.playBtn.addEventListener("click", () => {
   drumkit.start();
+  drumkit.updateBtn();
 });
