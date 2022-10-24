@@ -63,10 +63,10 @@ class DrumKit {
   updateBtn() {
     if (!this.isPlaying) {
       this.playBtn.textContent = "Play";
-      this.playBtn.classList.add("active");
+      this.playBtn.classList.remove("active");
     } else {
       this.playBtn.textContent = "Stop";
-      this.playBtn.classList.remove("active");
+      this.playBtn.classList.add("active");
     }
   }
   changeSound(e) {
@@ -84,7 +84,53 @@ class DrumKit {
         break;
     }
   }
+  mute(e) {
+    // console.log(e.target);
+    const muteIndex = e.target.getAttribute("data-track");
+    console.log(muteIndex);
+    e.target.classList.toggle("active");
+    if (e.target.classList.contains("active")) {
+      switch (muteIndex) {
+        case "0":
+          this.kickAudio.volume = 0;
+          break;
+        case "1":
+          this.snareAudio.volume = 0;
+          break;
+        case "2":
+          this.hihatAudio.volume = 0;
+          break;
+      }
+    }else{
+      switch (muteIndex) {
+        case "0":
+          this.kickAudio.volume = 1;
+          break;
+        case "1":
+          this.snareAudio.volume = 1;
+          break;
+        case "2":
+          this.hihatAudio.volume = 1;
+          break;
+      }
+    }
+  }
+  changeTempo(e){
+    const tempoText = document.querySelector('.tempo-nr');
+    tempoText.innerText = e.target.value;
+  }
+  updateTempo(e){
+    this.bpm = e.target.value;
+    clearInterval(this.isPlaying);
+    this.isPlaying = null;
+    if(this.playBtn.classList.contains('active')){
+      this.start();
+    }
+    console.log(this.isPlaying);
+  }
+
 }
+
 
 ///drumkit
 const drumkit = new DrumKit();
@@ -103,3 +149,15 @@ drumkit.selects.forEach((select) => {
     drumkit.changeSound(e);
   });
 });
+drumkit.muteBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    drumkit.mute(e);
+  });
+});
+drumkit.tempoSlider.addEventListener('input', function(e){
+  //difference between input and change
+  drumkit.changeTempo(e);
+});
+drumkit.tempoSlider.addEventListener('change', function(e){
+  drumkit.updateTempo(e);
+})
