@@ -15,5 +15,31 @@ class DrumKit {
     this.muteBtns = document.querySelectorAll(".mute");
     this.tempoSlider = document.querySelector(".tempo-slider");
   }
+  activePad(){
+    // console.log(this);
+    this.classList.toggle('active');
+  }
+
+  repeat(){
+    let step = this.index % 8;
+    const activeBars = document.querySelectorAll(`.b${step}`);
+    // console.log(activeBars);
+    this.index ++;
+  }
+  start(){
+    const interval = (60/this.bpm) * 1000;
+    setInterval(()=>{
+      this.repeat();
+    }, interval);
+  }
   
 };
+
+
+const drumkit = new DrumKit();
+drumkit.pads.forEach(pad=>{
+  pad.addEventListener('click', drumkit.activePad)
+})
+drumkit.playBtn.addEventListener('click', ()=>{
+  drumkit.start();
+})
