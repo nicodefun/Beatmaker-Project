@@ -15,31 +15,51 @@ class DrumKit {
     this.muteBtns = document.querySelectorAll(".mute");
     this.tempoSlider = document.querySelector(".tempo-slider");
   }
-  activePad(){
+  activePad() {
     // console.log(this);
-    this.classList.toggle('active');
+    this.classList.toggle("active");
   }
 
-  repeat(){
+  repeat() {
     let step = this.index % 8;
     const activeBars = document.querySelectorAll(`.b${step}`);
     // console.log(activeBars);
-    this.index ++;
+    activeBars.forEach((bar) => {
+      // when use alternate, gonna add a duration count
+      bar.style.animation = `playTrack 0.3s alternate ease-in-out 2`;
+      // check if pad is active
+      if (bar.classList.contains("active")) {
+        if (bar.classList.contains("kick-pad")) {
+          this.kickAudio.currentTime = 0;
+          this.kickAudio.play();
+        }
+        if (bar.classList.contains("snare-pad")) {
+          this.snareAudio.currentTime = 0;
+          this.snareAudio.play();
+        }
+        if (bar.classList.contains("hihat-pad")) {
+          this.hihatAudio.currentTime = 0;
+          this.hihatAudio.play();
+        }
+      }
+    });
+    this.index++;
   }
-  start(){
-    const interval = (60/this.bpm) * 1000;
-    setInterval(()=>{
+  start() {
+    const interval = (60 / this.bpm) * 1000;
+    setInterval(() => {
       this.repeat();
     }, interval);
   }
-  
-};
-
+}
 
 const drumkit = new DrumKit();
-drumkit.pads.forEach(pad=>{
-  pad.addEventListener('click', drumkit.activePad)
-})
-drumkit.playBtn.addEventListener('click', ()=>{
+drumkit.pads.forEach((pad) => {
+  pad.addEventListener("click", drumkit.activePad);
+  pad.addEventListener("animationend", function () {
+    this.style.animation = "";
+  });
+});
+drumkit.playBtn.addEventListener("click", () => {
   drumkit.start();
-})
+});
